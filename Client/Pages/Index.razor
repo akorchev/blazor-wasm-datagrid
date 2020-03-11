@@ -1,0 +1,39 @@
+﻿@page "/"
+@inject HttpClient Http
+@using Radzen.Blazor
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@if (forecasts != null)
+{
+    <RadzenGrid Data="@forecasts" AllowSorting="true" AllowFiltering="true" AllowPaging="true" PageSize="2">
+        <Columns>
+            <RadzenGridColumn TItem="WeatherForecast" Title="Date" Property="@nameof(WeatherForecast.Date)"></RadzenGridColumn>
+            <RadzenGridColumn TItem="WeatherForecast" Title="Summary" Property="@nameof(WeatherForecast.Summary)"></RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+}
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private WeatherForecast[] forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+      forecasts = await Http.GetJsonAsync<WeatherForecast[]>("WeatherForecast");
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
+
